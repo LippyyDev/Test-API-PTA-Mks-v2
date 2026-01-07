@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test API - Sistem Kedisiplinan Hakim</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        opacity: 0.9;
+      }
+
+      .api-key-section {
+        padding: 25px;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+      }
+
+      .api-key-section label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .api-key-input-group {
+        display: flex;
+        gap: 10px;
+      }
+
+      .api-key-input-group input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .api-key-input-group input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .api-key-input-group button {
+        padding: 12px 25px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+      }
+
+      .api-key-input-group button:hover {
+        background: #5568d3;
+      }
+
+      .base-url-section {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+      }
+
+      .base-url-section label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .base-url-section input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 15px 20px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        color: #666;
+        transition: all 0.3s;
+        border-bottom: 3px solid transparent;
+      }
+
+      .tab:hover {
+        background: #e9ecef;
+        color: #333;
+      }
+
+      .tab.active {
+        background: white;
+        color: #667eea;
+        border-bottom-color: #667eea;
+      }
+
+      .tab-content {
+        display: none;
+        padding: 30px;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .form-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+      }
+
+      .form-section h3 {
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 18px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #555;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 10px 12px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .btn-primary {
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background 0.3s;
+        margin-top: 10px;
+      }
+
+      .btn-primary:hover {
+        background: #5568d3;
+      }
+
+      .btn-primary:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .result-section {
+        margin-top: 25px;
+      }
+
+      .result-section h3 {
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 30px;
+        color: #667eea;
+        font-weight: 600;
+      }
+
+      .error {
+        background: #fee;
+        border: 2px solid #fcc;
+        color: #c33;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .success {
+        background: #efe;
+        border: 2px solid #cfc;
+        color: #3c3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .data-table th {
+        background: #667eea;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+      }
+
+      .data-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .data-table tr:hover {
+        background: #f8f9fa;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .badge-danger {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .badge-info {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+      }
+
+      .stat-card h4 {
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+      }
+
+      .stat-item {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      .stat-item-label {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-bottom: 5px;
+      }
+
+      .stat-item-value {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .laporan-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .laporan-card h4 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .laporan-card p {
+        color: #666;
+        margin: 5px 0;
+        font-size: 14px;
+      }
+
+      .laporan-card .actions {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-link {
+        padding: 8px 15px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        display: inline-block;
+        transition: background 0.3s;
+      }
+
+      .btn-link:hover {
+        background: #5568d3;
+      }
+
+      .json-viewer {
+        background: #2d2d2d;
+        color: #f8f8f2;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        max-height: 500px;
+        overflow-y: auto;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+        align-items: center;
+      }
+
+      .pagination button {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .pagination button:hover:not(:disabled) {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+
+      .pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .pagination-info {
+        padding: 8px 15px;
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔍 Test API - Sistem Kedisiplinan Hakim</h1>
+        <p>Uji dan lihat data laporan serta tracking kedisiplinan pegawai</p>
+      </div>
+
+      <div class="api-key-section">
+        <label for="apiKey">API Key *</label>
+        <div class="api-key-input-group">
+          <input type="text" id="apiKey" placeholder="Masukkan API Key Anda" />
+          <button onclick="saveApiKey()">Simpan API Key</button>
+        </div>
+        <div class="base-url-section">
+          <label for="baseUrl">Base URL API</label>
+          <input
+            type="text"
+            id="baseUrl"
+            value="https://newmassipa.cyou/api"
+            placeholder="https://newmassipa.cyou/api"
+          />
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('laporan')">
+          📄 Laporan
+        </button>
+        <button class="tab" onclick="switchTab('tracking')">
+          👥 Tracking Kedisiplinan
+        </button>
+      </div>
+
+      <!-- Tab Laporan -->
+      <div id="tab-laporan" class="tab-content active">
+        <div class="form-section">
+          <h3>Filter Laporan</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kategori</label>
+              <select id="kategoriLaporan">
+                <option value="">Semua Kategori</option>
+                <option value="disiplin">Laporan Disiplin</option>
+                <option value="apel">Laporan Apel</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Bulan</label>
+              <select id="bulanLaporan">
+                <option value="">Semua Bulan</option>
+                <option value="1">Januari</option>
+                <option value="2">Februari</option>
+                <option value="3">Maret</option>
+                <option value="4">April</option>
+                <option value="5">Mei</option>
+                <option value="6">Juni</option>
+                <option value="7">Juli</option>
+                <option value="8">Agustus</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tahun</label>
+              <input
+                type="number"
+                id="tahunLaporan"
+                placeholder="Contoh: 2024"
+                min="2000"
+                max="2099"
+              />
+            </div>
+            <div class="form-group">
+              <label>Limit</label>
+              <input
+                type="number"
+                id="limitLaporan"
+                value="10"
+                min="1"
+                max="100"
+              />
+            </div>
+          </div>
+          <button class="btn-primary" onclick="fetchLaporan()">
+            🔍 Ambil Data Laporan
+          </button>
+        </div>
+
+        <div id="result-laporan" class="result-section"></div>
+      </div>
+
+      <!-- Tab Tracking -->
+      <div id="tab-tracking" class="tab-content">
+        <div class="form-section">
+          <h3>Cari Tracking Kedisiplinan Pegawai</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>NIP / NIM Pegawai *</label>
+              <input
+                type="text"
+                id="nipTracking"
+                placeholder="Contoh: 195912311986031038"
+              />
+            </div>
+            <div class="form-group">
+              <label>Tahun</label>
+              <input
+                type="number"
+                id="tahunTracking"
+                placeholder="Contoh: 2024"
+                min="2000"
+                max="2099"
+              />
+            </div>
+            <div class="form-group">
+              <label>Limit</label>
+              <input
+                type="number"
+                id="limitTracking"
+                value="12"
+                min="1"
+                max="24"
+              />
+            </div>
+          </div>
+          <button class="btn-primary" onclick="fetchTracking()">
+            🔍 Cari Tracking
+          </button>
+        </div>
+
+        <div id="result-tracking" class="result-section"></div>
+      </div>
+    </div>
+
+    <script>
+      // Simpan API Key ke localStorage
+      function saveApiKey() {
+        const apiKey = document.getElementById("apiKey").value.trim();
+        if (!apiKey) {
+          alert("Mohon masukkan API Key!");
+          return;
+        }
+        localStorage.setItem("apiKey", apiKey);
+        localStorage.setItem(
+          "baseUrl",
+          document.getElementById("baseUrl").value.trim() ||
+            "https://newmassipa.cyou/api"
+        );
+        alert("API Key berhasil disimpan!");
+      }
+
+      // Load API Key dari localStorage saat halaman dimuat
+      window.addEventListener("DOMContentLoaded", function () {
+        const savedApiKey = localStorage.getItem("apiKey");
+        const savedBaseUrl = localStorage.getItem("baseUrl");
+        if (savedApiKey) {
+          document.getElementById("apiKey").value = savedApiKey;
+        }
+        if (savedBaseUrl) {
+          document.getElementById("baseUrl").value = savedBaseUrl;
+        }
+      });
+
+      // Switch tab
+      function switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll(".tab-content").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        document.querySelectorAll(".tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Show selected tab
+        document.getElementById(`tab-${tabName}`).classList.add("active");
+        event.target.classList.add("active");
+      }
+
+      // Get API Key dan Base URL
+      function getApiConfig() {
+        const apiKey =
+          document.getElementById("apiKey").value.trim() ||
+          localStorage.getItem("apiKey");
+        const baseUrl =
+          document.getElementById("baseUrl").value.trim() ||
+          localStorage.getItem("baseUrl") ||
+          "https://newmassipa.cyou/api";
+        return { apiKey, baseUrl };
+      }
+
+      // Fetch Laporan
+      async function fetchLaporan() {
+        const { apiKey, baseUrl } = getApiConfig();
+        if (!apiKey) {
+          alert("Mohon masukkan API Key terlebih dahulu!");
+          return;
+        }
+
+        const kategori = document.getElementById("kategoriLaporan").value;
+        const bulan = document.getElementById("bulanLaporan").value;
+        const tahun = document.getElementById("tahunLaporan").value;
+        const limit = document.getElementById("limitLaporan").value || 10;
+
+        let url = `${baseUrl}/laporan`;
+        if (kategori) {
+          url = `${baseUrl}/laporan/${kategori}`;
+        }
+
+        const params = new URLSearchParams();
+        if (bulan) params.append("bulan", bulan);
+        if (tahun) params.append("tahun", tahun);
+        params.append("limit", limit);
+        if (params.toString()) {
+          url += "?" + params.toString();
+        }
+
+        const resultDiv = document.getElementById("result-laporan");
+        resultDiv.innerHTML =
+          '<div class="loading">⏳ Memuat data laporan...</div>';
+
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "X-API-Key": apiKey,
+            },
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            resultDiv.innerHTML = `<div class="error">❌ Error: ${
+              data.message || "Terjadi kesalahan"
+            }</div>`;
+            return;
+          }
+
+          if (data.status === "success") {
+            displayLaporan(data.data);
+          } else {
+            resultDiv.innerHTML = `<div class="error">❌ ${data.message}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Display Laporan
+      function displayLaporan(data) {
+        const resultDiv = document.getElementById("result-laporan");
+        const laporan = data.laporan || [];
+        const pagination = data.pagination || {};
+
+        if (laporan.length === 0) {
+          resultDiv.innerHTML =
+            '<div class="success">ℹ️ Tidak ada data laporan ditemukan.</div>';
+          return;
+        }
+
+        let html = `
+                <div class="success">✅ Berhasil mengambil ${
+                  laporan.length
+                } data laporan</div>
+                <h3>Data Laporan (Total: ${
+                  pagination.total || laporan.length
+                })</h3>
+            `;
+
+        laporan.forEach((item) => {
+          const bulanNama = [
+            "",
+            "Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember",
+          ];
+
+          html += `
+                    <div class="laporan-card">
+                        <h4>${item.nama_laporan || "-"}</h4>
+                        <p><strong>ID:</strong> ${item.id}</p>
+                        <p><strong>Kategori:</strong> <span class="badge badge-info">${
+                          item.kategori || "-"
+                        }</span></p>
+                        <p><strong>Periode:</strong> ${
+                          bulanNama[item.bulan] || "-"
+                        } ${item.tahun || "-"}</p>
+                        <p><strong>Status:</strong> <span class="badge badge-success">${
+                          item.status || "-"
+                        }</span></p>
+                        <p><strong>Pengirim:</strong> ${
+                          item.pengirim?.nama_lengkap || "-"
+                        }</p>
+                        ${
+                          item.keterangan
+                            ? `<p><strong>Keterangan:</strong> ${item.keterangan}</p>`
+                            : ""
+                        }
+                        <p><strong>Tanggal:</strong> ${
+                          item.created_at || "-"
+                        }</p>
+                        <div class="actions">
+                            ${
+                              item.file_url
+                                ? `<a href="${
+                                    item.file_url
+                                  }?X-API-Key=${encodeURIComponent(
+                                    getApiConfig().apiKey
+                                  )}" target="_blank" class="btn-link">📄 Download File</a>`
+                                : ""
+                            }
+                            ${
+                              item.link_url
+                                ? `<a href="${
+                                    item.link_url
+                                  }?X-API-Key=${encodeURIComponent(
+                                    getApiConfig().apiKey
+                                  )}" target="_blank" class="btn-link">🔗 Buka Link Drive</a>`
+                                : ""
+                            }
+                        </div>
+                    </div>
+                `;
+        });
+
+        // Pagination info
+        if (pagination.total_pages > 1) {
+          html += `<div class="pagination-info">Halaman 1 dari ${pagination.total_pages} | Total: ${pagination.total} data</div>`;
+        }
+
+        resultDiv.innerHTML = html;
+      }
+
+      // Fetch Tracking
+      async function fetchTracking() {
+        const { apiKey, baseUrl } = getApiConfig();
+        if (!apiKey) {
+          alert("Mohon masukkan API Key terlebih dahulu!");
+          return;
+        }
+
+        const nip = document.getElementById("nipTracking").value.trim();
+        if (!nip) {
+          alert("Mohon masukkan NIP/NIM pegawai!");
+          return;
+        }
+
+        const tahun = document.getElementById("tahunTracking").value;
+        const limit = document.getElementById("limitTracking").value || 12;
+
+        let url = `${baseUrl}/pegawai/${nip}`;
+        const params = new URLSearchParams();
+        if (tahun) params.append("tahun", tahun);
+        params.append("limit", limit);
+        if (params.toString()) {
+          url += "?" + params.toString();
+        }
+
+        const resultDiv = document.getElementById("result-tracking");
+        resultDiv.innerHTML =
+          '<div class="loading">⏳ Memuat data tracking...</div>';
+
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "X-API-Key": apiKey,
+            },
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            resultDiv.innerHTML = `<div class="error">❌ Error: ${
+              data.message || "Terjadi kesalahan"
+            }</div>`;
+            return;
+          }
+
+          if (data.status === "success") {
+            displayTracking(data.data);
+          } else {
+            resultDiv.innerHTML = `<div class="error">❌ ${data.message}</div>`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+        }
+      }
+
+      // Display Tracking
+      function displayTracking(data) {
+        const resultDiv = document.getElementById("result-tracking");
+        const pegawai = data.pegawai || {};
+        const statistik = data.statistik || {};
+        const trackRecord = data.track_record?.items || [];
+        const ringkasan = data.ringkasan || [];
+        const tahunTersedia = data.tahun_tersedia || [];
+
+        let html =
+          '<div class="success">✅ Data tracking berhasil diambil</div>';
+
+        // Info Pegawai
+        html += `
+                <div class="stat-card">
+                    <h4>📋 Informasi Pegawai</h4>
+                    <p><strong>Nama:</strong> ${pegawai.nama || "-"}</p>
+                    <p><strong>NIP:</strong> ${pegawai.nip || "-"}</p>
+                    <p><strong>Jabatan:</strong> ${pegawai.jabatan || "-"}</p>
+                    ${
+                      pegawai.satker?.nama
+                        ? `<p><strong>Satker:</strong> ${pegawai.satker.nama}</p>`
+                        : ""
+                    }
+                    ${
+                      tahunTersedia.length > 0
+                        ? `<p><strong>Tahun Tersedia:</strong> ${tahunTersedia.join(
+                            ", "
+                          )}</p>`
+                        : ""
+                    }
+                </div>
+            `;
+
+        // Statistik Pelanggaran
+        html += `
+                <div class="stat-card">
+                    <h4>📊 Statistik Pelanggaran</h4>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-item-label">Terlambat</div>
+                            <div class="stat-item-value">${
+                              statistik.terlambat || 0
+                            }</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-item-label">Tidak Absen Masuk</div>
+                            <div class="stat-item-value">${
+                              statistik.tidak_absen_masuk || 0
+                            }</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-item-label">Pulang Awal</div>
+                            <div class="stat-item-value">${
+                              statistik.pulang_awal || 0
+                            }</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-item-label">Tidak Absen Pulang</div>
+                            <div class="stat-item-value">${
+                              statistik.tidak_absen_pulang || 0
+                            }</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-item-label">Keluar Tidak Izin</div>
+                            <div class="stat-item-value">${
+                              statistik.keluar_tidak_izin || 0
+                            }</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-item-label">Tidak Masuk Tanpa Ket</div>
+                            <div class="stat-item-value">${
+                              statistik.tidak_masuk_tanpa_ket || 0
+                            }</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-item-label">Tidak Masuk Sakit</div>
+                            <div class="stat-item-value">${
+                              statistik.tidak_masuk_sakit || 0
+                            }</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-item-label">Tidak Masuk Kerja</div>
+                            <div class="stat-item-value">${
+                              statistik.tidak_masuk_kerja || 0
+                            }</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        // Track Record
+        if (trackRecord.length > 0) {
+          html += "<h3>📝 Riwayat Tracking Kedisiplinan</h3>";
+
+          trackRecord.forEach((item) => {
+            const bulanNama = [
+              "",
+              "Januari",
+              "Februari",
+              "Maret",
+              "April",
+              "Mei",
+              "Juni",
+              "Juli",
+              "Agustus",
+              "September",
+              "Oktober",
+              "November",
+              "Desember",
+            ];
+
+            html += `
+                        <div class="laporan-card">
+                            <h4>${bulanNama[item.bulan] || "-"} ${
+              item.tahun || "-"
+            }</h4>
+                            <p><strong>Satker:</strong> ${
+                              item.satker || "-"
+                            }</p>
+                            <div style="margin: 15px 0;">
+                                <strong>Pelanggaran:</strong>
+                                <ul style="margin-top: 10px; padding-left: 20px;">
+                                    <li>Terlambat: ${
+                                      item.pelanggaran?.terlambat || 0
+                                    }</li>
+                                    <li>Tidak Absen Masuk: ${
+                                      item.pelanggaran?.tidak_absen_masuk || 0
+                                    }</li>
+                                    <li>Pulang Awal: ${
+                                      item.pelanggaran?.pulang_awal || 0
+                                    }</li>
+                                    <li>Tidak Absen Pulang: ${
+                                      item.pelanggaran?.tidak_absen_pulang || 0
+                                    }</li>
+                                    <li>Keluar Tidak Izin: ${
+                                      item.pelanggaran?.keluar_tidak_izin || 0
+                                    }</li>
+                                    <li>Tidak Masuk Tanpa Keterangan: ${
+                                      item.pelanggaran?.tidak_masuk_tanpa_ket ||
+                                      0
+                                    }</li>
+                                    <li>Tidak Masuk Sakit: ${
+                                      item.pelanggaran?.tidak_masuk_sakit || 0
+                                    }</li>
+                                    <li>Tidak Masuk Kerja: ${
+                                      item.pelanggaran?.tidak_masuk_kerja || 0
+                                    }</li>
+                                </ul>
+                            </div>
+                            ${
+                              item.bentuk_pembinaan
+                                ? `<p><strong>Bentuk Pembinaan:</strong> ${item.bentuk_pembinaan}</p>`
+                                : ""
+                            }
+                            ${
+                              item.keterangan
+                                ? `<p><strong>Keterangan:</strong> ${item.keterangan}</p>`
+                                : ""
+                            }
+                        </div>
+                    `;
+          });
+        } else {
+          html +=
+            '<div class="success">ℹ️ Tidak ada data tracking ditemukan untuk pegawai ini.</div>';
+        }
+
+        resultDiv.innerHTML = html;
+      }
+    </script>
+  </body>
+</html>
