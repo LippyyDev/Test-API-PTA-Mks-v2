@@ -744,7 +744,7 @@
                               item.file_url
                                 ? `<a href="${
                                     item.file_url
-                                  }?X-API-Key=${encodeURIComponent(
+                                  }${item.file_url.includes('?') ? '&' : '?'}X-API-Key=${encodeURIComponent(
                                     getApiConfig().apiKey
                                   )}" target="_blank" class="btn-link">📄 Download File</a>`
                                 : ""
@@ -753,7 +753,7 @@
                               item.link_url
                                 ? `<a href="${
                                     item.link_url
-                                  }?X-API-Key=${encodeURIComponent(
+                                  }${item.link_url.includes('?') ? '&' : '?'}X-API-Key=${encodeURIComponent(
                                     getApiConfig().apiKey
                                   )}" target="_blank" class="btn-link">🔗 Buka Link Drive</a>`
                                 : ""
